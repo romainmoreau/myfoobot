@@ -5,7 +5,8 @@ Desktop client for Foobot
 
 ## Features
 
-It is a very simple client that merely adds a tray icon which is constantly updated with the latest percentage of global air quality from your Foobot.
+It is a very simple client that adds a tray icon which is constantly updated with the latest percentage of global air quality from your Foobot.
+It also features a window with the detail of all sensor values.
 
 ## Requirements
 
