@@ -6,6 +6,7 @@ import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.math.BigDecimal;
 
 import javax.annotation.PostConstruct;
 
@@ -34,10 +35,15 @@ public class TrayIconUpdater {
 	@Autowired
 	private ApplicationContext applicationContext;
 
+	@Autowired
+	private DetailsView detailsView;
+
 	private TrayIcon trayIcon;
 
-	public void update(int value) {
-		Platform.runLater(() -> trayIcon.setImage(generateImage(value)));
+	public void update(BigDecimal allpollu) {
+		if (allpollu != null) {
+			Platform.runLater(() -> trayIcon.setImage(generateImage(allpollu.intValue())));
+		}
 	}
 
 	private Image generateImage(Integer value) {
@@ -81,6 +87,11 @@ public class TrayIconUpdater {
 		});
 		popupMenu.add(exitMenuItem);
 		trayIcon = new TrayIcon(generateImage(null));
+		trayIcon.addActionListener(e -> {
+			Platform.runLater(() -> {
+				detailsView.show();
+			});
+		});
 		trayIcon.setImageAutoSize(true);
 		trayIcon.setPopupMenu(popupMenu);
 		systemTray.add(trayIcon);
