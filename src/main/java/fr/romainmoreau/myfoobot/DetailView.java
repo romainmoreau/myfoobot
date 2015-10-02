@@ -11,7 +11,6 @@ public class DetailView extends VBox {
 	public static final int SIDE = 64;
 
 	private static final int MAX_DIGITS = 4;
-	private static final String LABEL_STYLE = "-fx-font-family:'monospace';-fx-font-size:12px;-fx-font-weight:bold;-fx-text-fill:white;-fx-effect:dropshadow(three-pass-box,black,2,0.5,0,0)";
 
 	private BigDecimal maxValue;
 
@@ -24,11 +23,9 @@ public class DetailView extends VBox {
 		setMaxSize(SIDE, SIDE);
 		this.maxValue = maxValue;
 		Label label = new Label(text);
-		label.setStyle(LABEL_STYLE);
 		label.setAlignment(Pos.CENTER);
 		label.setMaxWidth(SIDE);
 		valueLabel = new Label(text);
-		valueLabel.setStyle(LABEL_STYLE);
 		valueLabel.setAlignment(Pos.CENTER);
 		valueLabel.setMaxWidth(SIDE);
 		getChildren().addAll(label, valueLabel);
@@ -37,13 +34,13 @@ public class DetailView extends VBox {
 
 	private void updateBackgroundColor(BigDecimal value) {
 		if (maxValue == null) {
-			setStyle("-fx-background-color:blue");
+			getStyleClass().setAll("neutral");
 		} else if (value == null) {
-			setStyle("-fx-background-color:orange");
+			getStyleClass().setAll("warning");
 		} else if (value.compareTo(maxValue) == -1) {
-			setStyle("-fx-background-color:green");
+			getStyleClass().setAll("fine");
 		} else {
-			setStyle("-fx-background-color:red");
+			getStyleClass().setAll("alert");
 		}
 	}
 

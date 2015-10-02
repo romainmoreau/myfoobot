@@ -1,6 +1,9 @@
 package fr.romainmoreau.myfoobot;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
@@ -18,6 +21,7 @@ import javafx.application.Platform;
 public class ApiUpdater {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiUpdater.class);
 
+	private static final String TIME = "time";
 	private static final String PM = "pm";
 	private static final String TMP = "tmp";
 	private static final String HUM = "hum";
@@ -60,15 +64,23 @@ public class ApiUpdater {
 	public void update() {
 		try {
 			DataPoints dataPoints = apiClient.getLastDataPoints(uuid, 0, 0);
+			BigDecimal time = getValue(dataPoints, TIME);
 			BigDecimal pm = getValue(dataPoints, PM);
 			BigDecimal tmp = getValue(dataPoints, TMP);
 			BigDecimal hum = getValue(dataPoints, HUM);
 			BigDecimal co2 = getValue(dataPoints, CO2);
 			BigDecimal voc = getValue(dataPoints, VOC);
 			BigDecimal allpollu = getValue(dataPoints, ALLPOLLU);
-			LOGGER.debug("pm: {}, tmp: {}, hum: {}, co2: {}, voc: {}, allpollu: {}", pm, tmp, hum, co2, voc, allpollu);
+			LOGGER.debug("time: {}, pm: {}, tmp: {}, hum: {}, co2: {}, voc: {}, allpollu: {}", time, pm, tmp, hum, co2,
+					voc, allpollu);
 			trayIconUpdater.update(allpollu);
-			Platform.runLater(() -> detailsView.update(pm, tmp, hum, co2, voc));
+			final ZonedDateTime zonedDateTime;
+			if (time == null) {
+				zonedDateTime = null;
+			} else {
+				zonedDateTime = Instant.ofEpochSecond(time.intValueExact()).atZone(ZoneId.systemDefault());
+			}
+			Platform.runLater(() -> detailsView.update(zonedDateTime, pm, tmp, hum, co2, voc));
 		} catch (Exception e) {
 			LOGGER.error("Exception while updating", e);
 		}
